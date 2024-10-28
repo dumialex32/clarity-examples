@@ -1,0 +1,202 @@
+playback_time: 3871.9336
+playback_ticks: 116158
+playback_frames: 58010
+game_info {
+  dota {
+    match_id: 7976586347
+    game_mode: 2
+    game_winner: 2
+    player_info {
+      hero_name: "npc_dota_hero_monkey_king"
+      player_name: "Kaguya \305\214tsutsuki"
+      is_fake_client: false
+      steamid: 76561198155527213
+      game_team: 2
+    }
+    player_info {
+      hero_name: "npc_dota_hero_lone_druid"
+      player_name: "serjhonu"
+      is_fake_client: false
+      steamid: 76561198059940222
+      game_team: 3
+    }
+    player_info {
+      hero_name: "npc_dota_hero_witch_doctor"
+      player_name: "GoRaPiD"
+      is_fake_client: false
+      steamid: 76561198056720353
+      game_team: 2
+    }
+    player_info {
+      hero_name: "npc_dota_hero_shadow_shaman"
+      player_name: "carpati"
+      is_fake_client: false
+      steamid: 76561198062467746
+      game_team: 3
+    }
+    player_info {
+      hero_name: "npc_dota_hero_earthshaker"
+      player_name: "ShiTzel^"
+      is_fake_client: false
+      steamid: 76561198161996267
+      game_team: 3
+    }
+    player_info {
+      hero_name: "npc_dota_hero_nevermore"
+      player_name: "Dracarys^"
+      is_fake_client: false
+      steamid: 76561198007995017
+      game_team: 3
+    }
+    player_info {
+      hero_name: "npc_dota_hero_techies"
+      player_name: "NoobS\316\261ibot"
+      is_fake_client: false
+      steamid: 76561198035330626
+      game_team: 2
+    }
+    player_info {
+      hero_name: "npc_dota_hero_hoodwink"
+      player_name: "Goldless"
+      is_fake_client: false
+      steamid: 76561198055736042
+      game_team: 2
+    }
+    player_info {
+      hero_name: "npc_dota_hero_rattletrap"
+      player_name: "-Kamael- d\304\203 BOY"
+      is_fake_client: false
+      steamid: 76561198129093213
+      game_team: 3
+    }
+    player_info {
+      hero_name: "npc_dota_hero_weaver"
+      player_name: "Puiu"
+      is_fake_client: false
+      steamid: 76561198242346306
+      game_team: 2
+    }
+    leagueid: 0
+    picks_bans {
+      is_pick: false
+      team: 2
+      hero_id: 16
+    }
+    picks_bans {
+      is_pick: false
+      team: 3
+      hero_id: 97
+    }
+    picks_bans {
+      is_pick: false
+      team: 3
+      hero_id: 56
+    }
+    picks_bans {
+      is_pick: false
+      team: 2
+      hero_id: 107
+    }
+    picks_bans {
+      is_pick: false
+      team: 3
+      hero_id: 14
+    }
+    picks_bans {
+      is_pick: false
+      team: 3
+      hero_id: 76
+    }
+    picks_bans {
+      is_pick: false
+      team: 2
+      hero_id: 36
+    }
+    picks_bans {
+      is_pick: true
+      team: 2
+      hero_id: 30
+    }
+    picks_bans {
+      is_pick: true
+      team: 3
+      hero_id: 27
+    }
+    picks_bans {
+      is_pick: false
+      team: 2
+      hero_id: 88
+    }
+    picks_bans {
+      is_pick: false
+      team: 2
+      hero_id: 20
+    }
+    picks_bans {
+      is_pick: false
+      team: 3
+      hero_id: 17
+    }
+    picks_bans {
+      is_pick: true
+      team: 3
+      hero_id: 51
+    }
+    picks_bans {
+      is_pick: true
+      team: 2
+      hero_id: 123
+    }
+    picks_bans {
+      is_pick: true
+      team: 2
+      hero_id: 105
+    }
+    picks_bans {
+      is_pick: true
+      team: 3
+      hero_id: 7
+    }
+    picks_bans {
+      is_pick: true
+      team: 3
+      hero_id: 80
+    }
+    picks_bans {
+      is_pick: true
+      team: 2
+      hero_id: 114
+    }
+    picks_bans {
+      is_pick: false
+      team: 2
+      hero_id: 47
+    }
+    picks_bans {
+      is_pick: false
+      team: 3
+      hero_id: 70
+    }
+    picks_bans {
+      is_pick: false
+      team: 3
+      hero_id: 99
+    }
+    picks_bans {
+      is_pick: false
+      team: 2
+      hero_id: 113
+    }
+    picks_bans {
+      is_pick: true
+      team: 2
+      hero_id: 63
+    }
+    picks_bans {
+      is_pick: true
+      team: 3
+      hero_id: 11
+    }
+    end_time: 1728250092
+  }
+}

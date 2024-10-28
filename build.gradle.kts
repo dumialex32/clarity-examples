@@ -1,4 +1,4 @@
-import com.needhamsoftware.unojar.gradle.PackageUnoJarTask
+import com.needhamsoftware.unojar.gradle.PackageUnoJarTask 
 
 plugins {
     id("java-library")
@@ -22,6 +22,9 @@ dependencies {
     api("com.skadistats:clarity:3.1.1")
     api("ch.qos.logback:logback-classic:1.4.14")
     annotationProcessor("org.atteo.classindex:classindex:3.13")
+    
+    // Add Gson dependency
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 File("src/main/java/skadistats/clarity/examples").walk().maxDepth(1).forEach {
@@ -36,4 +39,4 @@ File("src/main/java/skadistats/clarity/examples").walk().maxDepth(1).forEach {
         archiveClassifier.set("")
         mainClass.set("skadistats.clarity.examples.${it.name}.Main")
     }
-}
+} 

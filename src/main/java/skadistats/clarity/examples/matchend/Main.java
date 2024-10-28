@@ -26,8 +26,6 @@ public class Main {
         log.info("total time taken: {}s", (tMatch) / 1000.0);
     }
 
-
-
     private final ControllableRunner runner;
 
     public Main(String fileName) throws IOException, InterruptedException {
@@ -49,7 +47,8 @@ public class Main {
                     new ColumnDef("A", new DefaultResolver<Integer>("PlayerResource", "m_iAssists.%i")),
                     new ColumnDef("Gold", new DefaultResolver<Integer>("PlayerResource", (isSource1 ? "EndScoreAndSpectatorStats." : "") + "m_iTotalEarnedGold.%i")),
                     new ColumnDef("LH", new DefaultResolver<Integer>("PlayerResource", "m_iLastHitCount.%i")),
-                    new ColumnDef("DN", new DefaultResolver<Integer>("PlayerResource", "m_iDenyCount.%i"))
+                    new ColumnDef("DN", new DefaultResolver<Integer>("PlayerResource", "m_iDenyCount.%i")),
+                    new ColumnDef("SteamID", new DefaultResolver<Long>("PlayerResource", "m_iPlayerSteamID.%i")) // Added SteamID column
             );
         } else {
             showTableWithColumns(
@@ -61,7 +60,8 @@ public class Main {
                     new ColumnDef("A", new DefaultResolver<Integer>("PlayerResource", "m_vecPlayerTeamData.%i.m_iAssists")),
                     new ColumnDef("Gold", new DefaultResolver<Integer>("Data%n", "m_vecDataTeam.%p.m_iTotalEarnedGold")),
                     new ColumnDef("LH", new DefaultResolver<Integer>("Data%n", "m_vecDataTeam.%p.m_iLastHitCount")),
-                    new ColumnDef("DN", new DefaultResolver<Integer>("Data%n", "m_vecDataTeam.%p.m_iDenyCount"))
+                    new ColumnDef("DN", new DefaultResolver<Integer>("Data%n", "m_vecDataTeam.%p.m_iDenyCount")),
+                    new ColumnDef("SteamID", new DefaultResolver<Long>("PlayerResource", "m_vecPlayerData.%i.m_iPlayerSteamID")) // Added SteamID column for newer format
             );
         }
     }
@@ -102,6 +102,17 @@ public class Main {
         System.out.println(table);
     }
 
+    private static String getTeamName(int team) {
+        switch (team) {
+            case 2:
+                return "Radiant";
+            case 3:
+                return "Dire";
+            default:
+                return "";
+        }
+    }
+
     private String getEngineDependentEntityName(String entityName) {
         switch (runner.getEngineType().getId()) {
             case DOTA_S1:
@@ -110,17 +121,6 @@ public class Main {
                 return "CDOTA_" + entityName;
             default:
                 throw new RuntimeException("invalid engine type");
-        }
-    }
-
-    private String getTeamName(int team) {
-        switch(team) {
-            case 2:
-                return "Radiant";
-            case 3:
-                return "Dire";
-            default:
-                return "";
         }
     }
 
@@ -157,11 +157,10 @@ public class Main {
                     .replaceAll("%i", Util.arrayIdxToString(index))
                     .replaceAll("%t", Util.arrayIdxToString(team))
                     .replaceAll("%p", Util.arrayIdxToString(pos));
-            String compiledName = entityName.replaceAll("%n", getTeamName(team));
+            String compiledName = entityName.replaceAll("%n", Main.getTeamName(team));
             Entity entity = getEntity(compiledName);
             FieldPath fieldPath = entity.getDtClass().getFieldPathForName(fieldPathString);
             return entity.getPropertyForFieldPath(fieldPath);
         }
     }
-
 }
