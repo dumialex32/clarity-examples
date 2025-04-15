@@ -6,7 +6,7 @@ import java.util.List;
 public class GameSummary {
     public long matchId;
     public float duration;
-    public int winner;
+    public String winner;
     public List<Player> players = new ArrayList<>();
 
     public static class Player {
