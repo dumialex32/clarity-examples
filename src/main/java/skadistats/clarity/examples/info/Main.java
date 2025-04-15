@@ -14,7 +14,7 @@ public class Main {
         GameSummary summary = new GameSummary();
         summary.matchId = dotaInfo.getMatchId();
         summary.duration = info.getPlaybackTime();
-        summary.winner = dotaInfo.getGameWinner();
+        summary.winner = getTeamName(dotaInfo.getGameWinner());
 
         for (CPlayerInfo p : dotaInfo.getPlayerInfoList()) {
             GameSummary.Player player = new GameSummary.Player();
@@ -25,6 +25,20 @@ public class Main {
             summary.players.add(player);
         }
 
+      
+
         System.out.println(new Gson().toJson(summary));
+    }
+
+
+    private static String getTeamName(int team) {
+        switch (team) {
+            case 2:
+                return "Radiant";
+            case 3:
+                return "Dire";
+            default:
+                return "Unknown";
+        }
     }
 }
