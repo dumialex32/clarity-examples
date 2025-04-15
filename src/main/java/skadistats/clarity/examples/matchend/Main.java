@@ -2,6 +2,11 @@ package skadistats.clarity.examples.matchend;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import skadistats.clarity.examples.PlayerStats.PlayerStats;
 import skadistats.clarity.io.Util;
 import skadistats.clarity.model.EngineId;
 import skadistats.clarity.model.Entity;
@@ -13,6 +18,8 @@ import skadistats.clarity.source.MappedFileSource;
 import skadistats.clarity.util.TextTable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @UsesEntities
 public class Main {
@@ -34,37 +41,86 @@ public class Main {
         runner.halt();
     }
 
-    private void showScoreboard() {
-        boolean isSource1 = runner.getEngineType().getId() == EngineId.DOTA_S1;
-        boolean isEarlyBetaFormat = !isSource1 && getEntity("PlayerResource").getDtClass().getFieldPathForName("m_vecPlayerData") == null;
-        if (isSource1 || isEarlyBetaFormat) {
-            showTableWithColumns(
-                    new DefaultResolver<Integer>("PlayerResource", "m_iPlayerTeams.%i"),
-                    new ColumnDef("Name", new DefaultResolver<String>("PlayerResource", "m_iszPlayerNames.%i")),
-                    new ColumnDef("Level", new DefaultResolver<Integer>("PlayerResource", "m_iLevel.%i")),
-                    new ColumnDef("K", new DefaultResolver<Integer>("PlayerResource", "m_iKills.%i")),
-                    new ColumnDef("D", new DefaultResolver<Integer>("PlayerResource", "m_iDeaths.%i")),
-                    new ColumnDef("A", new DefaultResolver<Integer>("PlayerResource", "m_iAssists.%i")),
-                    new ColumnDef("Gold", new DefaultResolver<Integer>("PlayerResource", (isSource1 ? "EndScoreAndSpectatorStats." : "") + "m_iTotalEarnedGold.%i")),
-                    new ColumnDef("LH", new DefaultResolver<Integer>("PlayerResource", "m_iLastHitCount.%i")),
-                    new ColumnDef("DN", new DefaultResolver<Integer>("PlayerResource", "m_iDenyCount.%i")),
-                    new ColumnDef("SteamID", new DefaultResolver<Long>("PlayerResource", "m_iPlayerSteamID.%i")) // Added SteamID column
-            );
-        } else {
-            showTableWithColumns(
-                    new DefaultResolver<Integer>("PlayerResource", "m_vecPlayerData.%i.m_iPlayerTeam"),
-                    new ColumnDef("Name", new DefaultResolver<String>("PlayerResource", "m_vecPlayerData.%i.m_iszPlayerName")),
-                    new ColumnDef("Level", new DefaultResolver<Integer>("PlayerResource", "m_vecPlayerTeamData.%i.m_iLevel")),
-                    new ColumnDef("K", new DefaultResolver<Integer>("PlayerResource", "m_vecPlayerTeamData.%i.m_iKills")),
-                    new ColumnDef("D", new DefaultResolver<Integer>("PlayerResource", "m_vecPlayerTeamData.%i.m_iDeaths")),
-                    new ColumnDef("A", new DefaultResolver<Integer>("PlayerResource", "m_vecPlayerTeamData.%i.m_iAssists")),
-                    new ColumnDef("Gold", new DefaultResolver<Integer>("Data%n", "m_vecDataTeam.%p.m_iTotalEarnedGold")),
-                    new ColumnDef("LH", new DefaultResolver<Integer>("Data%n", "m_vecDataTeam.%p.m_iLastHitCount")),
-                    new ColumnDef("DN", new DefaultResolver<Integer>("Data%n", "m_vecDataTeam.%p.m_iDenyCount")),
-                    new ColumnDef("SteamID", new DefaultResolver<Long>("PlayerResource", "m_vecPlayerData.%i.m_iPlayerSteamID")) // Added SteamID column for newer format
-            );
+   private void showScoreboard() {
+    boolean isSource1 = runner.getEngineType().getId() == EngineId.DOTA_S1;
+    boolean isEarlyBetaFormat = !isSource1 && getEntity("PlayerResource").getDtClass().getFieldPathForName("m_vecPlayerData") == null;
+
+    List<PlayerStats> players = new ArrayList<>();
+
+    ValueResolver<Integer> teamResolver;
+    ColumnDef[] columns;
+
+    if (isSource1 || isEarlyBetaFormat) {
+        teamResolver = new DefaultResolver<>("PlayerResource", "m_iPlayerTeams.%i");
+        columns = new ColumnDef[]{
+            new ColumnDef("Name", new DefaultResolver<>("PlayerResource", "m_iszPlayerNames.%i")),
+            new ColumnDef("Level", new DefaultResolver<>("PlayerResource", "m_iLevel.%i")),
+            new ColumnDef("K", new DefaultResolver<>("PlayerResource", "m_iKills.%i")),
+            new ColumnDef("D", new DefaultResolver<>("PlayerResource", "m_iDeaths.%i")),
+            new ColumnDef("A", new DefaultResolver<>("PlayerResource", "m_iAssists.%i")),
+            new ColumnDef("Gold", new DefaultResolver<>("PlayerResource", (isSource1 ? "EndScoreAndSpectatorStats." : "") + "m_iTotalEarnedGold.%i")),
+            new ColumnDef("LH", new DefaultResolver<>("PlayerResource", "m_iLastHitCount.%i")),
+            new ColumnDef("DN", new DefaultResolver<>("PlayerResource", "m_iDenyCount.%i")),
+            new ColumnDef("SteamID", new DefaultResolver<>("PlayerResource", "m_iPlayerSteamID.%i"))
+        };
+    } else {
+        teamResolver = new DefaultResolver<>("PlayerResource", "m_vecPlayerData.%i.m_iPlayerTeam");
+        columns = new ColumnDef[]{
+            new ColumnDef("Name", new DefaultResolver<>("PlayerResource", "m_vecPlayerData.%i.m_iszPlayerName")),
+            new ColumnDef("Level", new DefaultResolver<>("PlayerResource", "m_vecPlayerTeamData.%i.m_iLevel")),
+            new ColumnDef("K", new DefaultResolver<>("PlayerResource", "m_vecPlayerTeamData.%i.m_iKills")),
+            new ColumnDef("D", new DefaultResolver<>("PlayerResource", "m_vecPlayerTeamData.%i.m_iDeaths")),
+            new ColumnDef("A", new DefaultResolver<>("PlayerResource", "m_vecPlayerTeamData.%i.m_iAssists")),
+            new ColumnDef("Gold", new DefaultResolver<>("Data%n", "m_vecDataTeam.%p.m_iTotalEarnedGold")),
+            new ColumnDef("LH", new DefaultResolver<>("Data%n", "m_vecDataTeam.%p.m_iLastHitCount")),
+            new ColumnDef("DN", new DefaultResolver<>("Data%n", "m_vecDataTeam.%p.m_iDenyCount")),
+            new ColumnDef("SteamID", new DefaultResolver<>("PlayerResource", "m_vecPlayerData.%i.m_iPlayerSteamID"))
+        };
+    }
+
+    int team = 0;
+    int pos = 0;
+
+    for (int idx = 0; idx < 256; idx++) {
+        try {
+            int newTeam = teamResolver.resolveValue(idx, team, pos);
+            if (newTeam != team) {
+                team = newTeam;
+                pos = 0;
+            } else {
+                pos++;
+            }
+        } catch (Exception e) {
+            break;
+        }
+
+        if (team != 2 && team != 3) {
+            continue;
+        }
+
+        try {
+            PlayerStats p = new PlayerStats();
+            p.team = getTeamName(team);
+            p.name = (String) columns[0].resolver.resolveValue(idx, team, pos);
+            p.level = (Integer) columns[1].resolver.resolveValue(idx, team, pos);
+            p.kills = (Integer) columns[2].resolver.resolveValue(idx, team, pos);
+            p.deaths = (Integer) columns[3].resolver.resolveValue(idx, team, pos);
+            p.assists = (Integer) columns[4].resolver.resolveValue(idx, team, pos);
+            p.gold = (Integer) columns[5].resolver.resolveValue(idx, team, pos);
+            p.lastHits = (Integer) columns[6].resolver.resolveValue(idx, team, pos);
+            p.denies = (Integer) columns[7].resolver.resolveValue(idx, team, pos);
+            p.steamId = (Long) columns[8].resolver.resolveValue(idx, team, pos);
+            players.add(p);
+        } catch (Exception e) {
+            System.err.println("Failed to parse player at index " + idx + ": " + e.getMessage());
         }
     }
+
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(players));
+}
+
+    
 
     private void showTableWithColumns(ValueResolver<Integer> teamResolver, ColumnDef... columnDefs) {
         TextTable.Builder b = new TextTable.Builder();
@@ -143,8 +199,8 @@ public class Main {
     }
 
     private class DefaultResolver<V> implements ValueResolver<V> {
-        private final String entityName;
-        private final String pattern;
+        private final String entityName; 
+        private final String pattern; 
 
         public DefaultResolver(String entityName, String pattern) {
             this.entityName = entityName;
